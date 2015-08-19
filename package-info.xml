@@ -6,13 +6,13 @@
 	<type>modification</type>
 	<version>1.1</version>
 
-	<install>
 		<database>install20.php</database>
+	<install for="2.0 - 2.0.99">
 		<require-file name="PMAutoResponder.php" destination="$sourcedir" />
 		<require-file name="PMAutoResponder.english.php" destination="$languagedir" />
 	</install>
 
-	<uninstall>
+	<uninstall for="2.0 - 2.0.99">
 		<code>uninstall-required.php</code>
 		<remove-file name="$sourcedir/PMAutoResponder.php" />
 		<remove-file name="$languagedir/PMAutoResponder.english.php" />
