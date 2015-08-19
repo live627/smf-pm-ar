@@ -159,6 +159,21 @@ function PMAutoResponderGeneral($memID)
 	$context['page_desc'] = $txt['ar_pm_profile_area'];
 }
 
+function template_profile_pm_ar_body()
+{
+	global $cur_profile, $txt;
+
+	echo '
+						<dt>
+							<strong>', $txt['pm_ar_body'], '</strong>
+							<br />
+							<span class="smalltext">', $txt['pm_ar_body_desc'], '</span>
+						</dt>
+						<dd>
+							<textarea id="pm_ar_body" name="pm_ar_body" cols="8" rows="40" style="width:90%; height: 300px;">', isset($cur_profile['options']['pm_ar_body']) ? $cur_profile['options']['pm_ar_body'] : '', '</textarea>
+						</dd>';
+}
+
 function pm_ar_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
 {
 	global $context;
@@ -171,21 +186,6 @@ function pm_ar_load_permissions(&$permissionGroups, &$permissionList, &$leftPerm
 	$context['non_guest_permissions'] = array_unshift($context['non_guest_permissions'],
 		'pm_ar'
 	);
-}
-
-function template_profile_ar_pm_body()
-{
-	global $cur_profile, $txt;
-
-	echo '
-						<dt>
-							<strong>', $txt['ar_pm_body'], '</strong>
-							<br />
-							<span class="smalltext">', $txt['ar_pm_body_desc'], '</span>
-						</dt>
-						<dd>
-							<textarea id="ar_pm_body" name="options[ar_pm_body]" style="width:90%; height: 300px;">', isset($cur_profile['options']['ar_pm_body']) ? $cur_profile['options']['ar_pm_body'] : '', '</textarea>
-						</dd>';
 }
 
 function template_profile_ar_pm_body2()
