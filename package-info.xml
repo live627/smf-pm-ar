@@ -6,8 +6,8 @@
 	<type>modification</type>
 	<version>1.2</version>
 
-		<database>install20.php</database>
 	<install for="2.0 - 2.0.99">
+		<database>install.php</database>
 		<require-file name="PMAutoResponder.php" destination="$sourcedir" />
 		<require-file name="PMAutoResponder.english.php" destination="$languagedir" />
 	</install>
