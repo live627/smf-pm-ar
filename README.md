@@ -1,4 +1,4 @@
-# smf-pm-ar
+# PM Auto Respond 
 This mod is something similar to a vacation responder in that it sends a PM to a user who sent a PM. The message and subject are customisable, so the auto PM can be totally unique.
 
 It is based on permissions, so under membergroup permissions, a new entry is added to the centralized permissions management area under the category "Contact members using the personal messaging system" called "Automatically respond to incoming PMs".
@@ -12,4 +12,4 @@ The choices of criteria are:
 - Message subject contains keyphrase
 - Message body contains specified phrase
 
-Lastly, this mod uses hooks and no file edits.
+Lastly, this mod uses hooks and no file edits and, as such, requires SMF 2.
