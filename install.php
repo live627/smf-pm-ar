@@ -37,7 +37,7 @@ $columns = array(
 	),
 	array(
 		'name' => 'criteria',
-		'type' => 'mediumtext',
+		'type' => 'text',
 	),
 	array(
 		'name' => 'is_or',
