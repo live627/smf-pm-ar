@@ -8,16 +8,13 @@ function pm_ar_personal_message($recipients, $from_name, $subject, $message)
 {
 	global $context, $smcFunc, $txt, $user_info;
 
-	if (isset($context['ar_pm']))
+	if (isset($context['pm_ar']))
 		return;
 
 	loadLanguage('PMAutoResponder');
 	if (!empty($recipients['to']) || !empty($recipients['bcc']))
 	{
 		$auto_recipients = array_merge($recipients['to'], $recipients['bcc']);
-		foreach ($auto_recipients as &$auto_recipient)
-			$auto_recipient = (int) $auto_recipient;
-
 		$request = $smcFunc['db_query']('', '
 			SELECT m.id_member, m.real_name, m.member_name, t.value, t.variable
 			FROM {db_prefix}members AS m
@@ -26,7 +23,7 @@ function pm_ar_personal_message($recipients, $from_name, $subject, $message)
 				AND t.value != ""',
 			array(
 				'auto_recipients' => $auto_recipients,
-				'auto_recipients_var' => '%ar_pm_%',
+				'auto_recipients_var' => '%pm_ar_%',
 			)
 		);
 		$members = array();
@@ -74,7 +71,7 @@ function pm_ar_profile_areas(&$profile_areas)
 
 	loadLanguage('PMAutoResponder');
 	$profile_areas['edit_profile']['areas']['pm_ar'] = array(
-		'label' => $txt['ar_pm_profile_area'],
+		'label' => $txt['pm_ar_profile_area'],
 		'file' => 'PMAutoResponder.php',
 		'function' => 'PMAutoResponderProfile',
 		'enabled' => allowedTo(array('profile_extra_own', 'profile_extra_any')),
@@ -84,8 +81,8 @@ function pm_ar_profile_areas(&$profile_areas)
 			'any' => array('profile_extra_any'),
 		),
 		'subsections' => array(
-			'general' => array($txt['ar_pm_general']),
-			'filters' => array($txt['ar_pm_filters']),
+			'general' => array($txt['pm_ar_general']),
+			'filters' => array($txt['pm_ar_filters']),
 		),
 	);
 }
@@ -105,17 +102,17 @@ function PMAutoResponderProfile($memID)
 
 	// Create the tabs for the template.
 	$context[$context['profile_menu_name']]['tab_data'] = array(
-		'title' => $txt['ar_pm_profile_area'],
-		'description' => $txt['ar_pm_general_desc'],
+		'title' => $txt['pm_ar_profile_area'],
+		'description' => $txt['pm_ar_general_desc'],
 		'icon' => 'profile_sm.gif',
 		'tabs' => array(
 			'general' => array(
-				'title' => $txt['ar_pm_general'],
-				'description' => $txt['ar_pm_general_desc'],
+				'title' => $txt['pm_ar_general'],
+				'description' => $txt['pm_ar_general_desc'],
 			),
 			'filters' => array(
-				'title' => $txt['ar_pm_filters'],
-				'description' => $txt['ar_pm_filters_desc'],
+				'title' => $txt['pm_ar_filters'],
+				'description' => $txt['pm_ar_filters_desc'],
 			),
 		),
 	);
@@ -203,15 +200,15 @@ function pm_ar_load_permissions(&$permissionGroups, &$permissionList, &$leftPerm
 	);
 }
 
-function template_profile_ar_pm_body2()
+function template_profile_pm_ar_body2()
 {
 	global $context, $txt;
 
 	echo '
 						<dt>
-							<strong>', $txt['ar_pm_body'], '</strong>
+							<strong>', $txt['pm_ar_body'], '</strong>
 							<br />
-							<span class="smalltext">', $txt['ar_pm_body_desc'], '</span>
+							<span class="smalltext">', $txt['pm_ar_body_desc'], '</span>
 						</dt>
 						<dd>
 							<textarea id="body" name="body" style="width:90%; height: 300px;">', isset($context['rule']['body']) ? $context['rule']['body'] : '', '</textarea>
@@ -226,7 +223,7 @@ function PMAutoResponderFilters($memID)
 	// Load them... load them!!
 	pm_ar_load_rules(false, $memID);
 	loadLanguage('PersonalMessage');
-	$context['sub_template'] = 'rules';
+	$context['sub_template'] = 'rules2';
 
 	// Likely to need all the groups!
 	$request = $smcFunc['db_query']('', '
@@ -305,30 +302,30 @@ function PMAutoResponderFilters($memID)
 				'input_attr' => '',
 				'value' => empty($context['rule']['name']) ? $txt['pm_rule_name_default'] : $context['rule']['name'],
 			),
-			'ar_pm_add_rule' => array(
+			'pm_ar_add_rule' => array(
 				'type' => 'callback',
-				'callback_func' => 'ar_pm_add_rule',
+				'callback_func' => 'pm_ar_add_rule',
 			),
 			'subject' => array(
-				'label' => $txt['ar_pm_subject'],
-				'subtext' => $txt['ar_pm_subject_desc'],
+				'label' => $txt['pm_ar_subject'],
+				'subtext' => $txt['pm_ar_subject_desc'],
 				'type' => 'text',
 				'input_attr' => '',
 				'value' => isset($context['rule']['subject']) ? $context['rule']['subject'] : '',
 			),
 			'body' => array(
 				'type' => 'callback',
-				'callback_func' => 'ar_pm_body2',
+				'callback_func' => 'pm_ar_body2',
 			),
 			'save_in_outbox' => array(
-				'label' => $txt['ar_pm_outbox'],
+				'label' => $txt['pm_ar_outbox'],
 				'type' => 'check',
 				'input_attr' => '',
 				'value' => isset($context['rule']['save_in_outbox']) ? $context['rule']['save_in_outbox'] : '',
 			),
 		);
-		$context['profile_header_text'] = $txt['ar_pm_profile_area'];
-		$context['page_desc'] = $txt['ar_pm_profile_area'];
+		$context['profile_header_text'] = $txt['pm_ar_profile_area'];
+		$context['page_desc'] = $txt['pm_ar_profile_area'];
 		$context['submit_button_text'] = $txt['pm_rule_save'];
 		$context['profile_custom_submit_url'] = $scripturl . '?action=profile;area=' . $context['menu_item_selected'] . ';sa=filters;u=' . $context['id_member'] . ';pmarsave';
 	}
@@ -523,7 +520,7 @@ function pm_ar_load_rules($reload = false, $id_member_from)
 
 // Manage rules.
 // !!! TODO: Convert this to use the generic list.
-function template_rules()
+function template_rules2()
 {
 	global $context, $settings, $options, $txt, $scripturl;
 
@@ -594,7 +591,7 @@ function template_rules()
 }
 
 // Template for adding/editing a rule.
-function template_profile_ar_pm_add_rule()
+function template_profile_pm_ar_add_rule()
 {
 	global $context, $settings, $options, $txt, $scripturl;
 
@@ -648,7 +645,7 @@ function template_profile_ar_pm_add_rule()
 			// Rebuild the rule description!
 			function rebuildRuleDesc()
 			{
-				// Start with nothing.
+				// Start with... nothing. D\'OH!
 				var text = "";
 				var joinText = "";
 				var actionText = "";
