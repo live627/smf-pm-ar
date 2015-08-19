@@ -129,34 +129,35 @@ function PMAutoResponderGeneral($memID)
 	global $context, $cur_profile, $txt;
 
 	$context['profile_fields'] = array(
-		'options[ar_pm_enabled]' => array(
-			'label' => $txt['ar_pm_enabled'],
+		'pm_ar_enabled' => array(
+			'label' => $txt['pm_ar_enabled'],
 			'type' => 'check',
 			'input_attr' => '',
-			'value' => isset($cur_profile['options']['ar_pm_enabled']) ? $cur_profile['options']['ar_pm_enabled'] : '',
+			'value' => isset($cur_profile['options']['pm_ar_enabled']) ? $cur_profile['options']['pm_ar_enabled'] : '',
 		),
-		'options[ar_pm_subject]' => array(
-			'label' => $txt['ar_pm_subject'],
-			'subtext' => $txt['ar_pm_subject_desc'],
+		'pm_ar_subject' => array(
+			'label' => $txt['pm_ar_subject'],
+			'subtext' => $txt['pm_ar_subject_desc'],
 			'type' => 'text',
 			'input_attr' => '',
-			'value' => isset($cur_profile['options']['ar_pm_subject']) ? $cur_profile['options']['ar_pm_subject'] : '',
+			'value' => isset($cur_profile['options']['pm_ar_subject']) ? $cur_profile['options']['pm_ar_subject'] : '',
 		),
-		'ar_pm_body' => array(
+		'pm_ar_body' => array(
 			'type' => 'callback',
-			'callback_func' => 'ar_pm_body',
+			'callback_func' => 'pm_ar_body',
 		),
-		'options[ar_pm_outbox]' => array(
-			'label' => $txt['ar_pm_outbox'],
+		'pm_ar_outbox' => array(
+			'label' => $txt['pm_ar_outbox'],
 			'type' => 'check',
 			'input_attr' => '',
-			'value' => isset($cur_profile['options']['ar_pm_outbox']) ? $cur_profile['options']['ar_pm_outbox'] : '',
+			'value' => isset($cur_profile['options']['pm_ar_outbox']) ? $cur_profile['options']['pm_ar_outbox'] : '',
 		),
 	);
 
 	$context['sub_template'] = 'edit_options';
-	$context['profile_header_text'] = $txt['ar_pm_profile_area'];
-	$context['page_desc'] = $txt['ar_pm_profile_area'];
+	$context['profile_header_text'] = $txt['pm_ar_profile_area'];
+	$context['page_desc'] = $txt['pm_ar_profile_area'];
+	$context['profile_execute_on_save'] = array('pm_ar_profile_save');
 }
 
 function template_profile_pm_ar_body()
@@ -172,6 +173,20 @@ function template_profile_pm_ar_body()
 						<dd>
 							<textarea id="pm_ar_body" name="pm_ar_body" cols="8" rows="40" style="width:90%; height: 300px;">', isset($cur_profile['options']['pm_ar_body']) ? $cur_profile['options']['pm_ar_body'] : '', '</textarea>
 						</dd>';
+}
+
+function pm_ar_profile_save()
+{
+	global $context;
+
+	$_POST['default_options'] = array(
+		'pm_ar_enabled',
+		'pm_ar_subject',
+		'pm_ar_body',
+		'pm_ar_outbox',
+	);
+
+	makeThemeChanges($context['member'], 1);
 }
 
 function pm_ar_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
