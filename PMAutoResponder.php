@@ -454,7 +454,8 @@ function pm_ar_apply_rules($id_member_from, &$subject, &$body, &$save_in_outbox)
 		// Loop through all the criteria hoping to make a match.
 		foreach ($rule['criteria'] as $criterium)
 		{
-			if (($criterium['t'] == 'mid' && $criterium['v'] == $id_member_from) || ($criterium['t'] == 'gid' && in_array($criterium['v'], $user_info['groups'])) || ($criterium['t'] == 'sub' && strpos($subject, $criterium['v']) !== false) || ($criterium['t'] == 'msg' && strpos($body, $criterium['v']) !== false))
+			die(var_dump($criterium, $id_member_from, $criterium['t'] == 'mid' && $criterium['V'] == $id_member_from));
+			if (($criterium['t'] == 'mid' && $criterium['V'] == $id_member_from) || ($criterium['t'] == 'gid' && in_array($criterium['V'], $user_info['groups'])) || ($criterium['t'] == 'sub' && strpos($subject, $criterium['V']) !== false) || ($criterium['t'] == 'msg' && strpos($body, $criterium['V']) !== false))
 				$match = true;
 			// If we're adding and one criteria don't match then we stop!
 			elseif ($rule['logic'] == 'and')
