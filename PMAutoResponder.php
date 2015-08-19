@@ -42,18 +42,18 @@ function pm_ar_personal_message($recipients, $from_name, $subject, $message)
 
 		foreach ($members as $id_member => $member)
 		{
-			if (isset($theme_members[$id_member]['ar_pm_enabled'], $theme_members[$id_member]['ar_pm_subject'], $theme_members[$id_member]['ar_pm_body']))
+			if (isset($theme_members[$id_member]['pm_ar_enabled'], $theme_members[$id_member]['pm_ar_subject'], $theme_members[$id_member]['pm_ar_body']))
 			{
-				$context['ar_pm'] = true;
-				pm_ar_apply_rules($id_member, &$theme_members[$id_member]['ar_pm_subject'], &$theme_members[$id_member]['ar_pm_body'], &$theme_members[$id_member]['ar_pm_outbox']);
+				$context['pm_ar'] = true;
+				list ($subject, $body, $save_in_outbox) = pm_ar_apply_rules($id_member, $theme_members[$id_member]['pm_ar_subject'], $theme_members[$id_member]['pm_ar_body'], $theme_members[$id_member]['pm_ar_outbox']);
 				sendpm(
 					array(
 						'to' => array($user_info['id']),
 						'bcc' => array()
 					),
-					$theme_members[$id_member]['ar_pm_subject'],
-					$theme_members[$id_member]['ar_pm_body'],
-					!empty($theme_members[$id_member]['ar_pm_outbox']),
+					$subject,
+					$body,
+					!empty($save_in_outbox),
 					array(
 						'id' => $id_member,
 						'name' => $member['name'],
@@ -437,7 +437,7 @@ function PMAutoResponderFilters($memID)
 	}
 }
 
-function pm_ar_apply_rules($id_member_from, &$subject, &$body, &$save_in_outbox)
+function pm_ar_apply_rules($id_member_from, $subject, $body, $save_in_outbox)
 {
 	global $context, $user_info;
 
@@ -446,7 +446,7 @@ function pm_ar_apply_rules($id_member_from, &$subject, &$body, &$save_in_outbox)
 
 	// No rules?
 	if (empty($context['rules']))
-		return;
+		return false;
 
 	foreach ($context['rules'] as $rule)
 	{
@@ -467,12 +467,11 @@ function pm_ar_apply_rules($id_member_from, &$subject, &$body, &$save_in_outbox)
 
 		// If we have a match the rule must be true - act!
 		if ($match)
-		{
-			$subject = $rule['subject'];
-			$body = $rule['body'];
-			$save_in_outbox = $rule['save_in_outbox'];
-		}
+			return array($rule['subject'], $rule['body'], $rule['save_in_outbox']);
 	}
+
+	// No applicable rule found for you, sucka!!
+	return array($subject, $body, $save_in_outbox);
 }
 
 // Load up all the rules for the current user.
