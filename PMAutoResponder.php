@@ -645,7 +645,7 @@ function template_profile_pm_ar_add_rule()
 			// Rebuild the rule description!
 			function rebuildRuleDesc()
 			{
-				// Start with... nothing. D'OH!
+				// Start with... nothing. D\'OH!
 				var text = "";
 				var joinText = "";
 				var actionText = "";
